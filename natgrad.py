@@ -59,7 +59,7 @@ def natural_gradients(params, direction, predictions, metric, max_distance=None,
   
   return unflatten(direction_natural)
 
-def cg(f_Ax, b, iters=10, residual_tol=1e-10, damping=1e-4, debug=False, **kwargs):
+def cg(f_Ax, b, cg_iters=10, residual_tol=1e-10, damping=1e-4, debug=False, **kwargs):
   """
   Conjugate gradient descent. Finds the solution to Ax = b. The matrix A is represented
   indirectly by a callable that performs multiplication by an arbitrary vector.
@@ -95,7 +95,7 @@ def cg(f_Ax, b, iters=10, residual_tol=1e-10, damping=1e-4, debug=False, **kwarg
     return (n, x, p, r, rr)
   
   def cond(n, x, p, r, rr):
-    return tf.logical_and(tf.less(n, iters), tf.less(residual_tol, rr))
+    return tf.logical_and(tf.less(n, cg_iters), tf.less(residual_tol, rr))
   
   n = tf.constant(0)
   p = b
@@ -103,7 +103,7 @@ def cg(f_Ax, b, iters=10, residual_tol=1e-10, damping=1e-4, debug=False, **kwarg
   x = tf.zeros_like(b)
   rr = mag2(r)
   
-  n, x, p, r, rr = tf.while_loop(cond, body, (n, x, p, r, rr))
+  n, x, p, r, rr = tf.while_loop(cond, body, (n, x, p, r, rr), back_prop=False)
   
   if debug:
     return n, x, p, r, rr

@@ -40,6 +40,7 @@ class NaturalGradientTrainer(Default):
     ('learning_rate', 1e-1),
     ('damping', 1e-3),
     #('max_distance', 1e-3),
+    ('cg_iters', 10),
   ]
   
   def train_op(self, log_probs, loss, global_step):
@@ -111,5 +112,6 @@ def run(model = SimpleModel, trainer=SimpleTrainer, batch_size=100, steps=50, it
 if __name__ == "__main__":
   #run()
   #run(trainer=NaturalGradientTrainer)
-  run(trainer=NaturalGradientTrainer, learning_rate=1.0, damping=0.0)
+  run(trainer=NaturalGradientTrainer, cg_iters=5)
+  #run(trainer=NaturalGradientTrainer, learning_rate=1.0, damping=0.0)
   
